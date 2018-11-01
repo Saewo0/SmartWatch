@@ -162,20 +162,23 @@ def main():
                 oled.text("After %d s" % alarm_second, 10, 8)
                 oled.show()
             elif mode == 8 and alarm_second != 0:
-                alarm_s += alarm_second
+                alarm_s = second + alarm_second
                 alarm_second = 0
-                alarm_m += int(second / 60)
-                alarm_s = int(second % 60)
-            if mode < 7:
+                alarm_m = minute + int(alarm_s / 60)
+                alarm_s = int(alarm_s % 60)
+            if mode != 7:
                 rtc.datetime((year, month, day, weekday, hour, minute, second, tzinfo))
+                oled.fill(0)
+                oled.text(modeName[mode], 10, 0)
+                oled.text("%d:%d:%02d " % (hour, minute, second), 10, 8)
+                oled.text("%d/%d/%d" % (month, day, year), 10, 16)
+                oled.show()
             countC = 0
-            oled.fill(0)
-            oled.text(modeName[mode], 10, 0)
-            oled.text("%d:%d:%02d " % (hour, minute, second), 10, 8)
-            oled.text("%d/%d/%d" % (month, day, year), 10, 16)
-            oled.show()
         elif command == 'next':
             mode += 1
+            command = 'time'
+        elif command == 'alarm':
+            mode = 7
             command = 'time'
         elif command == 'return':
             mode = 0
